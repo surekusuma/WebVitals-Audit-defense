@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page Pulse Defensible — Web Page Auditor (Task B)</title>
+  <meta name="description" content="Audit any URL for HTTP status, response time, title, meta description, H1 count, images missing alt text, and word count. Built for Digital Heroes Training Task." />
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="glow-bg"></div>
+
+  <div class="app-container">
+    <!-- Navbar -->
+    <header class="navbar">
+      <div class="brand">
+        <div class="brand-icon">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div class="brand-text">
+          <span class="logo-title">Page Pulse</span>
+          <span class="logo-badge">DEFENSIBLE v1.0</span>
+        </div>
+      </div>
+      <div class="nav-right">
+        <span class="status-indicator">
+          <span class="ping-dot"></span> Test-Verified Parser
+        </span>
+      </div>
+    </header>
+
+    <!-- Main Content / Hero -->
+    <main>
+      <section class="hero-section">
+        <div class="hero-badge">
+          <i class="fa-solid fa-circle-check"></i> Unit-Tested Parsing Engine (Task B)
+        </div>
+        <h1>Audit Any Webpage <span class="gradient-text">In Seconds</span></h1>
+        <p class="hero-subtext">
+          Analyze HTTP status, response latency, SEO title & meta tags, H1 headers structure, image accessibility alt attributes, and word count.
+        </p>
+
+        <!-- Audit Form -->
+        <form id="auditForm" class="audit-form">
+          <div class="input-group">
+            <span class="input-icon"><i class="fa-solid fa-globe"></i></span>
+            <input 
+              type="text" 
+              id="urlInput" 
+              placeholder="Enter website URL (e.g. example.com or https://wikipedia.org)..." 
+              required 
+              autocomplete="off"
+            />
+            <button type="submit" id="submitBtn" class="btn-submit">
+              <span class="btn-text">Run Audit</span>
+              <i class="fa-solid fa-arrow-right icon-arrow"></i>
+              <span class="spinner hidden"><i class="fa-solid fa-circle-notch fa-spin"></i></span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Quick Samples -->
+        <div class="quick-samples">
+          <span class="samples-label">Try sample URLs:</span>
+          <button type="button" class="sample-chip" data-url="https://example.com">example.com</button>
+          <button type="button" class="sample-chip" data-url="https://wikipedia.org">wikipedia.org</button>
+          <button type="button" class="sample-chip" data-url="https://github.com">github.com</button>
+          <button type="button" class="sample-chip" data-url="https://httpbin.org/status/404">httpbin (404 test)</button>
+        </div>
+      </section>
+
+      <!-- Loading State Card -->
+      <div id="loadingState" class="state-card loading-card hidden">
+        <div class="pulse-loader">
+          <div class="ring ring-1"></div>
+          <div class="ring ring-2"></div>
+          <div class="pulse-center"><i class="fa-solid fa-bolt"></i></div>
+        </div>
+        <h3>Auditing URL...</h3>
+        <p id="loadingSubtext">Fetching HTML payload, measuring response time, and parsing metadata...</p>
+      </div>
+
+      <!-- Error State Card -->
+      <div id="errorState" class="state-card error-card hidden">
+        <div class="error-icon-wrapper">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h3 id="errorTitle">Audit Failed</h3>
+        <p id="errorMessage">Something went wrong while auditing the URL.</p>
+        <div id="errorDetails" class="error-detailsBox hidden"></div>
+        <button type="button" id="dismissErrorBtn" class="btn-secondary">Try Another URL</button>
+      </div>
+
+      <!-- Audit Results Dashboard -->
+      <div id="resultsDashboard" class="results-dashboard hidden">
+        
+        <!-- Audit Header Info -->
+        <div class="dashboard-header card-glass">
+          <div class="target-url-info">
+            <span class="section-tag"><i class="fa-solid fa-circle-check"></i> Defensible Audit Report</span>
+            <h2 id="reportTargetUrl">https://example.com</h2>
+            <div class="content-type-badge" id="reportContentType"><i class="fa-solid fa-file-code"></i> text/html</div>
+          </div>
+          <div class="header-actions">
+            <button id="copyJsonBtn" class="btn-pill" title="Copy Raw JSON">
+              <i class="fa-solid fa-copy"></i> Copy JSON
+            </button>
+            <button id="newAuditBtn" class="btn-pill btn-glow">
+              <i class="fa-solid fa-rotate-right"></i> New Audit
+            </button>
+          </div>
+        </div>
+
+        <!-- Metric Stat Cards Grid -->
+        <div class="metrics-grid">
+          
+          <!-- Stat 1: HTTP Status -->
+          <div class="stat-card card-glass">
+            <div class="stat-header">
+              <span class="stat-title">HTTP Status</span>
+              <div class="stat-icon icon-status"><i class="fa-solid fa-server"></i></div>
+            </div>
+            <div class="stat-value" id="statStatus">200</div>
+            <div class="stat-subtitle" id="statStatusLabel">OK — Successful Response</div>
+          </div>
+
+          <!-- Stat 2: Response Time -->
+          <div class="stat-card card-glass">
+            <div class="stat-header">
+              <span class="stat-title">Response Time</span>
+              <div class="stat-icon icon-speed"><i class="fa-solid fa-stopwatch"></i></div>
+            </div>
+            <div class="stat-value" id="statResponseTime">142 <span class="stat-unit">ms</span></div>
+            <div class="stat-subtitle" id="statSpeedLabel">Fast latency</div>
+          </div>
+
+          <!-- Stat 3: H1 Headers -->
+          <div class="stat-card card-glass">
+            <div class="stat-header">
+              <span class="stat-title">H1 Headers</span>
+              <div class="stat-icon icon-h1"><i class="fa-solid fa-heading"></i></div>
+            </div>
+            <div class="stat-value" id="statH1Count">1</div>
+            <div class="stat-subtitle" id="statH1Label">Optimal single H1 found</div>
+          </div>
+
+          <!-- Stat 4: Missing Alt Images -->
+          <div class="stat-card card-glass">
+            <div class="stat-header">
+              <span class="stat-title">Missing Image Alts</span>
+              <div class="stat-icon icon-alt"><i class="fa-solid fa-image"></i></div>
+            </div>
+            <div class="stat-value" id="statMissingAltCount">0</div>
+            <div class="stat-subtitle" id="statAltLabel">0 missing alt of 0 total images</div>
+          </div>
+
+          <!-- Stat 5: Word Count -->
+          <div class="stat-card card-glass">
+            <div class="stat-header">
+              <span class="stat-title">Approx. Word Count</span>
+              <div class="stat-icon icon-words"><i class="fa-solid fa-file-lines"></i></div>
+            </div>
+            <div class="stat-value" id="statWordCount">340</div>
+            <div class="stat-subtitle">Text body content estimate</div>
+          </div>
+
+        </div>
+
+        <!-- Detailed Audit Sections -->
+        <div class="details-section-grid">
+          
+          <!-- SEO & Meta Tags Card -->
+          <div class="detail-card card-glass">
+            <div class="card-title-row">
+              <h3><i class="fa-solid fa-magnifying-glass"></i> SEO & Meta Information</h3>
+            </div>
+            
+            <div class="meta-field">
+              <label><i class="fa-solid fa-heading"></i> Document Title</label>
+              <div class="meta-box" id="valTitle">(No Title Found)</div>
+            </div>
+
+            <div class="meta-field">
+              <label><i class="fa-solid fa-align-left"></i> Meta Description</label>
+              <div class="meta-box" id="valMetaDesc">(No Meta Description Tag Present)</div>
+            </div>
+          </div>
+
+          <!-- H1 & Content Structure Card -->
+          <div class="detail-card card-glass">
+            <div class="card-title-row">
+              <h3><i class="fa-solid fa-list-check"></i> H1 Structure Audit</h3>
+              <span class="badge-pill" id="h1Badge">1 Tag</span>
+            </div>
+            <div id="h1ListContainer" class="h1-list-container">
+              <p class="empty-list-msg">No H1 headers found on this page.</p>
+            </div>
+          </div>
+
+          <!-- Image Accessibility Audit Card -->
+          <div class="detail-card card-glass full-width">
+            <div class="card-title-row">
+              <h3><i class="fa-solid fa-universal-access"></i> Image Accessibility Audit</h3>
+              <span class="badge-pill" id="imagesBadge">0 Issues</span>
+            </div>
+            <div id="imagesAuditContainer" class="images-audit-container">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Raw JSON Viewer -->
+          <div class="detail-card card-glass full-width">
+            <div class="card-title-row">
+              <h3><i class="fa-solid fa-code"></i> Raw Audit Payload (JSON)</h3>
+              <button id="toggleJsonBtn" class="btn-pill-small">Expand</button>
+            </div>
+            <pre id="jsonPayloadView" class="json-code-block collapsed"><code></code></pre>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- Task B Required Credit Footer -->
+    <footer class="app-footer">
+      <div class="footer-content">
+        <p class="credit-line">
+          <a href="https://digitalheroesco.com" target="_blank" rel="noopener noreferrer" class="dh-link">
+            Built for Digital Heroes Training Task
+          </a>
+        </p>
+        <p class="sub-credit">Page Pulse Defensible Engine — High Performance Web Auditor</p>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+{
+  "name": "page-pulse-defensible",
+  "version": "1.0.0",
+  "description": "Task B - Defensible Page Pulse Web Auditor with Unit Tests, Decoupled Parser, and Architectural Documentation for Digital Heroes Training Task.",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "jest --verbose"
+  },
+  "keywords": [
+    "audit",
+    "digital-heroes",
+    "page-pulse",
+    "unit-testing",
+    "jest"
+  ],
+  "author": "Digital Heroes Candidate",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "cheerio": "^1.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
